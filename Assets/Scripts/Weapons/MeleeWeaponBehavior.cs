@@ -15,7 +15,7 @@ public class MeleeWeaponBehavior : MonoBehaviour
 
     public float CurrentDamage
     {
-        get =>  _currentDamage;
+        get => _currentDamage *= FindObjectOfType<PlayerStats>().CurrentMight;
         set => _currentDamage = value;
     }
 
