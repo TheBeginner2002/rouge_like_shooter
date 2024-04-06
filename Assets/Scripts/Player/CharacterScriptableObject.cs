@@ -5,6 +5,8 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "CharacterScriptableObject", menuName = "ScriptableObject/Character")]
 public class CharacterScriptableObject : ScriptableObject
 {
+    [SerializeField] private Sprite icon;
+    [SerializeField] private new string name;
     [SerializeField] private GameObject startingWeapon;
     [SerializeField] private float maxHealth;
     [SerializeField] private float recovery;
@@ -12,6 +14,18 @@ public class CharacterScriptableObject : ScriptableObject
     [SerializeField] private float might;
     [SerializeField] private float projectileSpeed;
     [SerializeField] private float magnet;
+
+    public Sprite Icon
+    {
+        get => icon;
+        set => icon = value;
+    }
+
+    public string Name
+    {
+        get => name;
+        set => name = value;
+    }
 
     public GameObject StartingWeapon
     {

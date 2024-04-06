@@ -14,8 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponPrefab: {fileID: 5899801163222369077, guid: 8a185bb74d8cf4c1d8fd2509ea47639a, type: 3}
   damage: 5
-  speed: 20
+  speed: 15
   cooldownDuration: 2
   pierce: 1
   level: 1
-  nextLevelPrefab: {fileID: 0}
+  nextLevelPrefab: {fileID: 5260778898081268009, guid: e516625479f74450aa6d1d6cb1495f8e, type: 3}
+  icon: {fileID: 1191077138, guid: 491a21363090b4e6093656d9c78cc0dc, type: 3}
