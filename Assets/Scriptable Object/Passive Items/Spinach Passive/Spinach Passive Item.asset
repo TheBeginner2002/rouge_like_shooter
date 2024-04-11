@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Spinach Passive Item
   m_EditorClassIdentifier: 
   multipler: 100
+  name: Spinach
+  description: Increase Might up by 100%
   level: 1
   nextLevelPrefab: {fileID: 7000722028223163093, guid: ae2ea653606ac4ff79afb390191a8c3c, type: 3}
   icon: {fileID: 360789672, guid: bf60ea1fe720846fca7a3d62b4760752, type: 3}

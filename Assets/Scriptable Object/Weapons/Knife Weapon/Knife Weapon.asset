@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Knife Weapon
   m_EditorClassIdentifier: 
   weaponPrefab: {fileID: 5899801163222369077, guid: 8a185bb74d8cf4c1d8fd2509ea47639a, type: 3}
+  name: Knife
+  description: Shoot a knife forward the player facing
   damage: 5
   speed: 15
   cooldownDuration: 2

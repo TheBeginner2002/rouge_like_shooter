@@ -13,6 +13,8 @@ MonoBehaviour:
   m_Name: Wing Passive Item
   m_EditorClassIdentifier: 
   multipler: 50
+  name: Wings
+  description: Increase movement speed up by 50%
   level: 1
   nextLevelPrefab: {fileID: 7490566945162333107, guid: b5a7a19d9b6e645e481fc301e3f4c57b, type: 3}
   icon: {fileID: -2064324297, guid: a4f95ad59f66740a8b542ac726887879, type: 3}

@@ -6,6 +6,8 @@ using UnityEngine;
 public class PassiveItemScriptableObject : ScriptableObject
 {
     [SerializeField] private float multipler;
+    [SerializeField] new string name;
+    [SerializeField] string description;
     [SerializeField] private int level;
     [SerializeField] private GameObject nextLevelPrefab;
     [SerializeField] private Sprite icon;
@@ -31,5 +33,17 @@ public class PassiveItemScriptableObject : ScriptableObject
     {
         get => icon;
         set => icon = value;
+    }
+
+    public string Name
+    {
+        get => name;
+        set => name = value;
+    }
+
+    public string Description
+    {
+        get => description;
+        set => description = value;
     }
 }

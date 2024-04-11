@@ -6,6 +6,8 @@ using UnityEngine;
 public class WeaponScriptableObject : ScriptableObject
 {
     [SerializeField] GameObject weaponPrefab;
+    [SerializeField] new string name;
+    [SerializeField] string description;
     [SerializeField] float damage;
     [SerializeField] float speed;
     [SerializeField] float cooldownDuration;
@@ -60,5 +62,17 @@ public class WeaponScriptableObject : ScriptableObject
     {
         get => icon;
         set => icon = value;
+    }
+
+    public string Name
+    {
+        get => name;
+        set => name = value;
+    }
+
+    public string Description
+    {
+        get => description;
+        set => description = value;
     }
 }
