@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour
         
         if (_stopwatchTime >= timeLimit)
         {
-            GameOver();
+            playerObject.SendMessage("Kill");
         }
     }
 

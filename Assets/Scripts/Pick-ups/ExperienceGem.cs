@@ -3,13 +3,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ExperienceGem : Pickups, ICollectible
+public class ExperienceGem : Pickups
 {
     public int experienceGranted;
 
-    public void Collect()
+    public override void Collect()
     {
-        // Debug.Log("Called");
+        if (hasBeenCollected)
+        {
+            return;
+        }
+        else
+        {
+            base.Collect();
+        }
         PlayerStats player = FindObjectOfType<PlayerStats>();
         player.IncreaseExperience(experienceGranted);
     }

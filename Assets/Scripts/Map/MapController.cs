@@ -19,6 +19,9 @@ public class MapController : MonoBehaviour
     private GameObject _latestChunk;
     private float _optimizerCooldown;
     private float _opDist;
+    private Vector3 playerLastPosition;
+    private PoolManager _poolManager;
+    private string _chunkTag;
     
 
     public GameObject CurrentChunk
@@ -27,12 +30,10 @@ public class MapController : MonoBehaviour
         set => currentChunk = value;
     }
 
-    private Vector3 _noTerrainPosition;
-    private PlayerMovement _playerMovement;
-
     private void Awake()
     {
-        _playerMovement = FindObjectOfType<PlayerMovement>();
+        playerLastPosition = player.transform.position;
+        _poolManager = GetComponent<PoolManager>();
     }
 
     private void Update()
@@ -45,69 +46,97 @@ public class MapController : MonoBehaviour
     {
         if (!currentChunk) return;
         
-        if (_playerMovement.moveDir is { x: > 0, y: 0 }) //right
+        Vector3 moveDir = player.transform.position - playerLastPosition;
+        playerLastPosition = player.transform.position;
+
+        string directionName = GetDirectionName(moveDir);
+
+        CheckAndSpawnChunk(directionName);
+
+        if (directionName.Contains("Up"))
         {
-            CallSpawnChunk("Up");
-            CallSpawnChunk("Right");
-            CallSpawnChunk("Down");
+            CheckAndSpawnChunk("Up");
         }
-        else if (_playerMovement.moveDir is { x: < 0, y: 0 }) //left
+        if (directionName.Contains("Down"))
         {
-            CallSpawnChunk("Up");
-            CallSpawnChunk("Left");
-            CallSpawnChunk("Down");
+            CheckAndSpawnChunk("Down");
         }
-        else if (_playerMovement.moveDir is { x: 0, y: > 0 }) //up
+        if (directionName.Contains("Right"))
         {
-            CallSpawnChunk("Right");
-            CallSpawnChunk("Up");
-            CallSpawnChunk("Left");
+            CheckAndSpawnChunk("Right");
         }
-        else if (_playerMovement.moveDir is { x: 0, y: < 0 }) //down
+        if (directionName.Contains("Left"))
         {
-            CallSpawnChunk("Right");
-            CallSpawnChunk("Down");
-            CallSpawnChunk("Left");
-        }
-        else if (_playerMovement.moveDir is { x: > 0, y: > 0 }) //right up
-        {
-            CallSpawnChunk("Up");
-            CallSpawnChunk("Right Up");
-            CallSpawnChunk("Right");
-        }
-        else if (_playerMovement.moveDir is { x: > 0, y: < 0 }) //right down
-        {
-            CallSpawnChunk("Right");
-            CallSpawnChunk("Right Down");
-            CallSpawnChunk("Down");
-        }
-        else if (_playerMovement.moveDir is { x: < 0, y: > 0 }) //left up
-        {
-            CallSpawnChunk("Left");
-            CallSpawnChunk("Left Up");
-            CallSpawnChunk("Up");
-        }
-        else if (_playerMovement.moveDir is { x: < 0, y: < 0 }) //left down
-        {
-            CallSpawnChunk("Left");
-            CallSpawnChunk("Left Down");
-            CallSpawnChunk("Down");
+            CheckAndSpawnChunk("Left");
         }
     }
 
-    void CallSpawnChunk(String nameDir)
+    void CheckAndSpawnChunk(string direction)
     {
-        if (!Physics2D.OverlapCircle(currentChunk.transform.Find(nameDir).position, checkerRadius, terrainMask))
+        Vector3 spawnPosition = currentChunk.transform.Find(direction).position;
+
+        if (!Physics2D.OverlapCircle(spawnPosition, checkerRadius, terrainMask) && !IsChunkAtPosition(spawnPosition))
         {
-            _noTerrainPosition = currentChunk.transform.Find(nameDir).position;
-            SpawnChuck();
+            SpawnChuck(currentChunk.transform.Find(direction).position);
         }
     }
 
-    void SpawnChuck()
+    bool IsChunkAtPosition(Vector3 position)
+    {
+        foreach (var chunk in spawnedChunks)
+        {
+            if(Vector3.Distance(chunk.transform.position, position) < checkerRadius)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    string GetDirectionName(Vector3 direction)
+    {
+        direction = direction.normalized;
+
+        if(Mathf.Abs(direction.x) > Mathf.Abs(direction.y)) 
+        {
+            if(direction.y > 0.5f) 
+            {
+                return direction.x > 0 ? "Right Up" : "Left Up";
+            }
+            else if(direction.y < -0.5f)
+            {
+                return direction.x > 0 ? "Right Down" : "Left Down";
+            }
+            else
+            {
+                return direction.x > 0 ? "Right" : "Left";
+            }
+        }
+        else
+        {
+            if (direction.x > 0.5f)
+            {
+                return direction.y > 0 ? "Right Up" : "Right Down";
+            }
+            else if (direction.x < -0.5f)
+            {
+                return direction.y > 0 ? "Left Up" : "Left Down";
+            }
+            else
+            {
+                return direction.y > 0 ? "Up" : "Down";
+            }
+        }
+    }
+
+    void SpawnChuck(Vector3 spawnPosition)
     {
         int rand = Random.Range(0, terrainChunks.Count);
-        _latestChunk = Instantiate(terrainChunks[rand], _noTerrainPosition, Quaternion.identity);
+        _chunkTag = terrainChunks[rand].name;
+        //_latestChunk = Instantiate(terrainChunks[rand], spawnPosition, Quaternion.identity);
+        //spawnedChunks.Add(_latestChunk);
+
+        _latestChunk = _poolManager.SpawnFromPool(_chunkTag, spawnPosition, Quaternion.identity);
         spawnedChunks.Add(_latestChunk);
     }
 
@@ -121,12 +150,27 @@ public class MapController : MonoBehaviour
         }
         else return;
         
-        foreach (var chunk in spawnedChunks)
+        //foreach (var chunk in spawnedChunks)
+        //{
+        //    _opDist = Vector3.Distance(player.transform.position, chunk.transform.position);
+        //    if (_opDist > maxOpDist)
+        //    {
+        //        chunk.SetActive(false);
+        //    }
+        //    else
+        //    {
+        //        chunk.SetActive(true);
+        //    }
+        //}
+
+        for(int i = spawnedChunks.Count - 1; i >= 0; i--)
         {
+            var chunk = spawnedChunks[i];
             _opDist = Vector3.Distance(player.transform.position, chunk.transform.position);
             if (_opDist > maxOpDist)
             {
-                chunk.SetActive(false);
+                _poolManager.ReturnToPool(_chunkTag,chunk);
+                spawnedChunks.RemoveAt(i);
             }
             else
             {

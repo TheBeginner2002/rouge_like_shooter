@@ -35,17 +35,20 @@ public class EnemySpawner : MonoBehaviour
     public int enemiesAlive;//
     public int maxEnemiesAllowed;//maximum enemies allowed on map at once
     public bool maxEnemiesReached = false;// check number of enemies is reaching max? 
+    bool _isWaveActive = false;
 
     [Header("Spawn Positions")] 
     public List<Transform> relativeSpawnPoint;
 
     IEnumerator BeginNextWave()
     {
+        _isWaveActive = true;
         //Wave for `waveInterval` before starting the next wave
         yield return new WaitForSeconds(waveInterval);
         //If there are more wave to start after current wave, move on to next wave
         if (currentWaveCount < waves.Count - 1)
         {
+            _isWaveActive = false;
             currentWaveCount++;
             CaculateWaveQuota();
         }
@@ -75,13 +78,6 @@ public class EnemySpawner : MonoBehaviour
                 // check if minimum number of enemies of this type have been spawned
                 if (enemyGroup.spawnCount < enemyGroup.enemyCount)
                 {
-                    // Limit the number of enemies that can be spawned at once
-                    if (enemiesAlive >= maxEnemiesAllowed)
-                    {
-                        maxEnemiesReached = true;
-                        return;
-                    }
-
                     Instantiate(enemyGroup.enemyPrefab,
                         relativeSpawnPoint[Random.Range(0, relativeSpawnPoint.Count)].position,
                         Quaternion.identity);
@@ -89,19 +85,27 @@ public class EnemySpawner : MonoBehaviour
                     enemyGroup.spawnCount++;
                     waves[currentWaveCount].spawnCount++;
                     enemiesAlive++;
+
+                    // Limit the number of enemies that can be spawned at once
+                    if (enemiesAlive >= maxEnemiesAllowed)
+                    {
+                        maxEnemiesReached = true;
+                        return;
+                    }
                 }
             }
         }
 
-        if (enemiesAlive < maxEnemiesAllowed)
-        {
-            maxEnemiesReached = false;
-        }
     }
 
     public void OnEnemyDied()
     {
         enemiesAlive--;
+
+        if (enemiesAlive < maxEnemiesAllowed)
+        {
+            maxEnemiesReached = false;
+        }
     }
 
     private void Start()
@@ -112,7 +116,7 @@ public class EnemySpawner : MonoBehaviour
 
     private void Update()
     {
-        if (currentWaveCount < waves.Count && waves[currentWaveCount].spawnCount == 0)
+        if (currentWaveCount < waves.Count && waves[currentWaveCount].spawnCount == 0 && !_isWaveActive)
         {
             StartCoroutine(BeginNextWave());
         }

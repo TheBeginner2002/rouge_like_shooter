@@ -2895,7 +2895,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 4
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -8525,6 +8525,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1678979470}
   - component: {fileID: 1678979469}
+  - component: {fileID: 1678979471}
   m_Layer: 0
   m_Name: Map Controller
   m_TagString: Untagged
@@ -8573,6 +8574,29 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1678979471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1678979468}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b3d72906c68529a48a3304cf6f98cd17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  pools:
+  - tag: Terrain Chunk
+    prefab: {fileID: 7730870405191369915, guid: 3ae65a53fdde5414ea4e7da8451ae179, type: 3}
+    size: 100
+  - tag: Terrain Chunk 1
+    prefab: {fileID: 7730870405191369915, guid: 723e79eb693954bb898847a658fa54d4, type: 3}
+    size: 100
+  - tag: Terrain Chunk 2
+    prefab: {fileID: 7730870405191369915, guid: 9a65678657dd344ce8ae24aaa9ba8402, type: 3}
+    size: 100
+  poolGameObject: {fileID: 1678979468}
 --- !u!1 &1713913596
 GameObject:
   m_ObjectHideFlags: 0
